@@ -1,0 +1,8 @@
+[package]
+name = "id"
+version = "0.0.1"
+description = "Simple typed IDs"
+
+[lib]
+name = "id"
+path = "lib.rs"

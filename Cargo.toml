@@ -1,0 +1,18 @@
+[package]
+name = "simplecs"
+version = "0.0.1"
+license = "Apache-2.0"
+keywords = ["gamedev"]
+authors = [
+"Dzmitry Malyshau <kvarkus@gmail.com>",
+]
+
+[lib]
+name = "simplecs"
+
+[dependencies.id]
+path = "src/id"
+
+[dependencies.ecs]
+path = "src/ecs"
+plugin = true
