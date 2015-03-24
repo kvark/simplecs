@@ -63,6 +63,10 @@ impl<T> Array<T> {
         &self.0[i as usize]
     }
 
+    pub fn get_opt(&self, opt: Option<Id<T>>) -> Option<&T> {
+        opt.map(|Id(i, _)| &self.0[i as usize])
+    }
+
     pub fn get_mut(&mut self, Id(i, _): Id<T>) -> &mut T {
         self.0.get_mut(i as usize).unwrap()
     }
