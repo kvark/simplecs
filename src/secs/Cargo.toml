@@ -1,0 +1,13 @@
+[package]
+name = "secs"
+version = "0.0.1"
+description = "Syntactic ECS"
+keywords = []
+license = "Apache-2.0"
+authors = ["kvark"]
+
+[lib]
+name = "secs"
+path = "lib.rs"
+plugin = true
+crate-type = [ "dylib" ]
