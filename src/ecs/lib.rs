@@ -58,7 +58,7 @@ macro_rules! world {
         }
 
         /// A system responsible for some aspect (physics, rendering, etc)
-        pub trait System {
+        pub trait System: Send {
             fn process(&mut self, $param, &mut Components, &mut Vec<Entity>);
         }
 
@@ -66,7 +66,7 @@ macro_rules! world {
         pub struct World {
             pub data: Components,
             pub entities: Vec<Entity>,
-            pub systems: Vec<Box<System + Send>>,
+            pub systems: Vec<Box<System>>,
         }
 
         impl World {
@@ -77,6 +77,11 @@ macro_rules! world {
                     systems: Vec::new(),
                 }
             }
+
+            pub fn add_system<S: System + 'static>(&mut self, system: S) {
+                self.systems.push(Box::new(system));
+            }
+
             pub fn update(&mut self, param: $param) {
                 for sys in self.systems.iter_mut() {
                     sys.process(param, &mut self.data, &mut self.entities);
