@@ -1,0 +1,19 @@
+[package]
+
+name = "secs"
+version = "0.0.1"
+description = "Syntactic ECS"
+keywords = []
+license = "Apache-2.0"
+authors = [
+"Dzmitry Malyshau <kvarkus@gmail.com>",
+]
+
+[lib]
+name = "secs"
+path = "lib.rs"
+plugin = true
+crate-type = [ "dylib" ]
+
+[dev_dependencies.id]
+path = "../id"
