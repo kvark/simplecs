@@ -6,3 +6,6 @@ description = "Simple ECS macro"
 [lib]
 name = "ecs"
 path = "lib.rs"
+
+[dev_dependencies.id]
+path = "../id"
