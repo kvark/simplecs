@@ -16,3 +16,7 @@ path = "src/id"
 [dependencies.ecs]
 path = "src/ecs"
 plugin = true
+
+[dependencies.secs]
+path = "src/secs"
+plugin = true
