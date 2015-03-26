@@ -64,12 +64,20 @@ impl ext::base::ItemDecorator for SyntaxEcs {
             id: ast::DUMMY_NODE_ID,
             node: ast::ItemStruct(
                 P(ast::StructDef {
-                    fields: definition.fields.iter().map(|field| {
-                        let ref ty = field.node.ty;
-                        let mut f = field.clone();
-                        f.node.attrs.clear();
-                        f.node.ty = quote_ty!(context, Option<$id_path::Id<$ty>>);
-                        f
+                    fields: definition.fields.iter().map(|field| codemap::Spanned {
+                        node: ast::StructField_ {
+                            kind: ast::StructFieldKind::NamedField(
+                                field.node.ident().unwrap(),
+                                ast::Visibility::Public
+                            ),
+                            id: field.node.id,
+                            ty: {
+                                let ty = field.node.ty.deref();
+                                quote_ty!(context, Option<$id_path::Id<$ty>>)
+                            },
+                            attrs: Vec::new(),
+                        },
+                        span: field.span,
                     }).collect(),
                     ctor_id: None,
                 }),
@@ -89,12 +97,20 @@ impl ext::base::ItemDecorator for SyntaxEcs {
             id: ast::DUMMY_NODE_ID,
             node: ast::ItemStruct(
                 P(ast::StructDef {
-                    fields: definition.fields.iter().map(|field| {
-                        let ref ty = field.node.ty;
-                        let mut f = field.clone();
-                        f.node.attrs.clear();
-                        f.node.ty = quote_ty!(context, $id_path::Array<$ty>>);
-                        f
+                    fields: definition.fields.iter().map(|field| codemap::Spanned {
+                        node: ast::StructField_ {
+                            kind: ast::StructFieldKind::NamedField(
+                                field.node.ident().unwrap(),
+                                ast::Visibility::Public
+                            ),
+                            id: field.node.id,
+                            ty: {
+                                let ty = field.node.ty.deref();
+                                quote_ty!(context, $id_path::Array<$ty>>)
+                            },
+                            attrs: Vec::new(),
+                        },
+                        span: field.span,
                     }).collect(),
                     ctor_id: None,
                 }),
@@ -153,7 +169,7 @@ impl ext::base::ItemDecorator for SyntaxEcs {
                 //TODO: add_X, get_X, mut_X, etc
                 .collect()
             ),
-            vis: item.vis,
+            vis: ast::Visibility::Inherited,
             span: span,
         }));
         //5a: generate `struct World`
@@ -239,7 +255,7 @@ impl ext::base::ItemDecorator for SyntaxEcs {
                     })
                 ]
             ),
-            vis: item.vis,
+            vis: ast::Visibility::Inherited,
             span: span,
         }));
     }

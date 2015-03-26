@@ -2,9 +2,11 @@
 name = "secs"
 version = "0.0.1"
 description = "Syntactic ECS"
-keywords = []
+keywords = ["gamedev"]
 license = "Apache-2.0"
-authors = ["kvark"]
+authors = [
+"Dzmitry Malyshau <kvarkus@gmail.com>",
+]
 
 [lib]
 name = "secs"
