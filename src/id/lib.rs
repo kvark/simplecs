@@ -82,4 +82,11 @@ impl<T> Array<T> {
     pub fn mut_iter<'a>(&'a mut self) -> slice::IterMut<'a, T> {
         self.0.iter_mut()
     }
+
+    pub fn walk_looking_back<'a, F: Fn(&[T], &mut T)>(&'a mut self, fun: F) {
+        for i in 0.. self.0.len() {
+            let (left, right) = self.0.split_at_mut(i);
+            fun(left, &mut right[0])
+        }
+    }
 }
