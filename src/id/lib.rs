@@ -76,7 +76,7 @@ impl<T> Array<T> {
         self.0.iter()
     }
 
-    pub fn mut_iter<'a>(&'a mut self) -> slice::IterMut<'a, T> {
+    pub fn iter_mut<'a>(&'a mut self) -> slice::IterMut<'a, T> {
         self.0.iter_mut()
     }
 
