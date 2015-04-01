@@ -44,9 +44,18 @@ impl<S> fmt::Debug for Id<S> {
     }
 }
 
+/// Abstract read-only storage
+pub trait Storage<T> {
+    fn get(&self, Id<T>) -> &T;
+    fn get_opt(&self, opt: Option<Id<T>>) -> Option<&T> {
+        opt.map(|id| self.get(id))
+    }
+    fn find_id<F: Fn(&T,) -> bool>(&self, F) -> Option<Id<T>>;
+}
 
-/// A wrapper around `Vec` that indexes with Id types
-#[derive(Clone, Debug)]
+/// A wrapper around `Vec` that can only be grown up
+/// and implements `Storage`
+#[derive(Debug)]
 pub struct Array<T>(Vec<T>);
 
 impl<T> Array<T> {
@@ -59,20 +68,8 @@ impl<T> Array<T> {
         Id(self.0.len() as IdType - 1, PhantomData)
     }
 
-    pub fn get(&self, Id(i, _): Id<T>) -> &T {
-        &self.0[i as usize]
-    }
-
-    pub fn get_opt(&self, opt: Option<Id<T>>) -> Option<&T> {
-        opt.map(|Id(i, _)| &self.0[i as usize])
-    }
-
     pub fn get_mut(&mut self, Id(i, _): Id<T>) -> &mut T {
         self.0.get_mut(i as usize).unwrap()
-    }
-
-    pub fn find_id<F: Fn(&T,) -> bool>(&self, fun: F) -> Option<Id<T>> {
-        self.0.iter().position(fun).map(|i| Id(i as IdType, PhantomData))
     }
 
     pub fn iter<'a>(&'a self) -> slice::Iter<'a, T> {
@@ -83,10 +80,34 @@ impl<T> Array<T> {
         self.0.iter_mut()
     }
 
-    pub fn walk_looking_back<'a, F: Fn(&[T], &mut T)>(&'a mut self, fun: F) {
+    pub fn walk_looking_back<F: Fn(Slice<T>, &mut T)>(&mut self, fun: F) {
         for i in 0.. self.0.len() {
             let (left, right) = self.0.split_at_mut(i);
-            fun(left, &mut right[0])
+            fun(Slice(left), &mut right[0])
         }
+    }
+}
+
+impl<T> Storage<T> for Array<T> {
+    fn get(&self, Id(i, _): Id<T>) -> &T {
+        &self.0[i as usize]
+    }
+
+    fn find_id<F: Fn(&T,) -> bool>(&self, fun: F) -> Option<Id<T>> {
+        self.0.iter().position(fun).map(|i| Id(i as IdType, PhantomData))
+    }
+}
+
+/// Wrapper around a slice that implements `Storage`
+#[derive(Debug)]
+pub struct Slice<'a, T: 'a>(&'a [T]);
+
+impl<'a, T> Storage<T> for Slice<'a, T> {
+    fn get(&self, Id(i, _): Id<T>) -> &T {
+        &self.0[i as usize]
+    }
+
+    fn find_id<F: Fn(&T,) -> bool>(&self, fun: F) -> Option<Id<T>> {
+        self.0.iter().position(fun).map(|i| Id(i as IdType, PhantomData))
     }
 }

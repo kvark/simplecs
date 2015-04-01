@@ -2,6 +2,8 @@ extern crate id;
 #[macro_use]
 extern crate ecs;
 
+use id::Storage;
+
 pub type SimpleComponent = i32;
 world! { id (()),
     simple : SimpleComponent,
