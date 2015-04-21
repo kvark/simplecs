@@ -17,7 +17,7 @@ pub fn registrar(reg: &mut rustc::plugin::Registry) {
     );
 }
 
-#[derive(Copy)]
+#[derive(Clone, Copy)]
 pub struct SyntaxEcs;
 
 impl ext::base::ItemDecorator for SyntaxEcs {
